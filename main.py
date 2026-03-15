@@ -12,14 +12,24 @@ def main():
 
     # Adicionar clientes 
     if st.button("Novo cliente"):
-        try:
-            if nome and email and telefone: # Verifica se não estão vazios
+    # .strip() garante que " " não seja aceito como dado
+        if nome.strip() and email.strip() and telefone.strip():
+        
+        # Chamando as funções que você colocou no banco
+            if not banco.validar_email(email):
+                st.error("❌ E-mail inválido! Use o formato: nome@email.com")
+            elif not banco.validar_telefone(telefone):
+                st.error("❌ Telefone inválido! Use o formato: (11) 99999-9999")
+        else:
+            try:
                 banco.adicionar_cliente(nome, email, telefone)
-                st.success(f"Cliente {nome} cadastrado com sucesso!")
-            else:
-                st.error("Por favor, preencha todos os campos antes de salvar.")
-        except Exception as e:
-            st.error(f"Erro ao cadastrar cliente: {e}")
+                st.success(f"✅ {nome} cadastrado com sucesso!")
+                # Isso "reseta" a interface para o próximo paciente
+                st.rerun() 
+            except:
+                st.error("⚠️ Este e-mail já está cadastrado!")
+    else:
+        st.warning("⚠️ Atenção: Todos os campos são obrigatórios.")
 
     st.divider()
 
